@@ -1,4 +1,4 @@
 # uGPIO
 
-Alfa-release\n
+ALFA-Release --
 An universal approach to GPIO managment
