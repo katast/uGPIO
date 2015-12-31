@@ -1,5 +1,22 @@
 /*
-*/
+ *
+ * File : ugpio.c
+ *
+ * Copyright (C) 2015-2016 Katast
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 #include <esp8266.h>
 #include "gpio.h"
@@ -13,7 +30,6 @@
 #define DBG_UGPIO(format, ...) do { } while(0)
 #endif
 
-// Intialize list of gpio names and functions
 static ugpio_reg ugpio_map[] =
 {
     { PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0, 1, 0, 0, NULL },	//gpio0
@@ -134,7 +150,6 @@ ugpio_inputMode(uint8_t ugpio_pin, UGPIO_PullMode pullMode, void (*interruptHand
 
 bool ICACHE_FLASH_ATTR
 ugpio_outputMode(uint8_t ugpio_pin, UGPIO_PullMode pullMode){
-    //DBG_UGPIO("UGPIO output mode called\n");
     if(ugpio_getAvailable(ugpio_pin)){
         if (ugpio_pin == 16){
             ugpio16_outputMode();
@@ -142,7 +157,6 @@ ugpio_outputMode(uint8_t ugpio_pin, UGPIO_PullMode pullMode){
             ugpio_map[ugpio_pin].ugpio_available = 0;
         }else{
             // Set pin function
-            //DBG_UGPIO("UGPIO pin was available\n");
             PIN_FUNC_SELECT(ugpio_map[ugpio_pin].ugpio_mux_name, ugpio_map[ugpio_pin].ugpio_func);
             gpio_output_set(0, 0, BIT(GPIO_ID_PIN(ugpio_pin)),0);
             ugpio_map[ugpio_pin].ugpio_pin_mode = UGPIO_OUTPUT;
@@ -164,16 +178,13 @@ ugpio_outputMode(uint8_t ugpio_pin, UGPIO_PullMode pullMode){
 
 bool ICACHE_FLASH_ATTR
 ugpio_set(uint8_t ugpio_pin, uint8_t value){
-    //DBG_UGPIO("UGPIO set called\n");
     if(ugpio_getAvailable(ugpio_pin) == 0){
-        //DBG_UGPIO("UGPIO set if1\n");
         if(ugpio_map[ugpio_pin].ugpio_pin_mode == UGPIO_OUTPUT){
             if (ugpio_pin == 16){
                 WRITE_PERI_REG(RTC_GPIO_OUT,
                                (READ_PERI_REG(RTC_GPIO_OUT) & 0xfffffffeUL) | (0x1UL & value));
             }else{
                 if (value&1){
-                    //DBG_UGPIO("UGPIO set value 1\n");
                     WRITE_PERI_REG( PERIPHS_GPIO_BASEADDR, READ_PERI_REG(PERIPHS_GPIO_BASEADDR) | BIT(ugpio_pin));
                 } else {
                     WRITE_PERI_REG( PERIPHS_GPIO_BASEADDR, READ_PERI_REG(PERIPHS_GPIO_BASEADDR) & ~BIT(ugpio_pin));
@@ -213,11 +224,11 @@ ugpio_setFree(uint8_t ugpio_pin){
     }
     return false;
 }
+
 void ICACHE_FLASH_ATTR
 ugpioMainInterrupt(uint8_t intPinNum){
     uint32_t ugpio_status = GPIO_REG_READ(GPIO_STATUS_ADDRESS);
     int ugpio_id = interruptPinNumber(ugpio_status);
-    //DBG_UGPIO("UGPIO interrupt pin %d\n",ugpio_id);
     if (ugpio_id != 0xFF){
         // Disable interrupt on this pin
         gpio_pin_intr_state_set(GPIO_ID_PIN(ugpio_id), GPIO_PIN_INTR_DISABLE);

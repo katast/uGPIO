@@ -1,14 +1,28 @@
 /*
-    @TODOLIST
-    -General debugging (first sight seams to work great)
-*/
+ *
+ * File : ugpio.h
+ *
+ * Copyright (C) 2015-2016 Katast
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 #ifndef __UGPIO_H__
 #define __UGPIO_H__
 
 #include "c_types.h"
 
-// Define ugpio interrupt callback func
 typedef void (*handlerPtr)(void *args);
 
 typedef enum {
@@ -21,7 +35,6 @@ typedef enum {
     UGPIO_PULLUP=1
 } UGPIO_PullMode;
 
-// Define mapping from pin to function mode
 typedef struct {
     uint32_t ugpio_mux_name;
     uint8_t ugpio_func;
@@ -31,21 +44,20 @@ typedef struct {
     handlerPtr funcPtr;
 } ugpio_reg;
 
-// MY VERSION OF GPIO MANAGMENT
+uint8_t ugpio_getAvailable(uint8_t ugpio_pin);
 
-uint8_t ugpio_getAvailable(uint8_t ugpio_pin);//DONE
+bool ugpio_setUnavailable(uint8_t ugpio_pin);
 
-bool ugpio_setUnavailable(uint8_t ugpio_pin);//DONE
-// With or without callback, just in case for gpio 16 (doesn't make much sense, but for completeness...)
 bool ugpio_inputMode(uint8_t ugpio_pin, UGPIO_PullMode pullMode, void (*interruptHandlerFunc)(void *args));
 
 bool ugpio_outputMode(uint8_t ugpio_pin, UGPIO_PullMode pullMode);
 
-bool ugpio_set(uint8_t ugpio_pin, uint8_t value); // set output value
+bool ugpio_set(uint8_t ugpio_pin, uint8_t value);
 
-uint8_t ugpio_get(uint8_t ugpio_pin); // get input value
+uint8_t ugpio_get(uint8_t ugpio_pin);
 
-bool ugpio_setFree(uint8_t ugpio_pin); // call it before switch from input or output or just to free the gpio from list and interrupt
+bool ugpio_setFree(uint8_t ugpio_pin);
+
 void ugpioInit(void);
 
 #endif
