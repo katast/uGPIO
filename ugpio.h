@@ -48,7 +48,6 @@ uint8_t ugpio_getAvailable(uint8_t ugpio_pin);
 
 bool ugpio_setUnavailable(uint8_t ugpio_pin);
 
-bool ugpio_inputMode(uint8_t ugpio_pin, UGPIO_PullMode pullMode, void (*interruptHandlerFunc)(void *args));
 bool ugpio_inputMode(uint8_t ugpio_pin, UGPIO_PullMode pullMode, void (*interruptHandlerFunc)(int));
 
 bool ugpio_outputMode(uint8_t ugpio_pin, UGPIO_PullMode pullMode);
