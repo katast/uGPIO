@@ -23,7 +23,7 @@
 
 #include "c_types.h"
 
-typedef void (*handlerPtr)(void *args);
+typedef void (*handlerPtr)(int);
 
 typedef enum {
     UGPIO_OUTPUT=0,
